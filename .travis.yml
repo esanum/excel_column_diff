@@ -1,17 +1,9 @@
 ---
 language: rust
 cache: cargo
-rust:
-  - beta
-  - nightly
+rust: beta
 
 os:
   - windows
   - linux
   - osx
-
-
-matrix:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
