@@ -1,0 +1,10 @@
+cargo-features = ["edition"]
+
+[package]
+name = "excel_column_diff"
+version = "0.1.0"
+authors = ["Philipp Hansch <dev@phansch.net>"]
+edition = "2018"
+
+[dependencies]
+calamine = "*"
