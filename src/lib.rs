@@ -12,17 +12,18 @@ pub fn diff_workbooks(path_left: &str, path_right: &str) {
     let workbook_right: Xlsx<_> = open_workbook(path_right)
         .expect(&format!("The workbook '{}' could not be loaded", path_right));
 
-    let left_sheets: Vec<Sheet> = build_sheets(workbook_left);
-    let right_sheets: Vec<Sheet> = build_sheets(workbook_right);
+    let left_sheets: Vec<Sheet> = build_sheets(workbook_left, 0);
+    let right_sheets: Vec<Sheet> = build_sheets(workbook_right, 2);
 
     gen_diff(left_sheets, right_sheets);
 }
 
 fn gen_diff(left_sheets: Vec<Sheet>, right_sheets: Vec<Sheet>) {
-    // FIXME: The following line assumes that both have the same sheets
-    for (index, right_sheet) in right_sheets.iter().enumerate() {
+    for right_sheet in right_sheets.iter() {
+        // FIXME: The following line assumes that both have exactly the same sheets
+        let left_sheet = left_sheets.iter().find(|s| s.name == right_sheet.name).expect("Could not find sheet");
         println!("### {} ###", right_sheet.name);
-        let diff = diff::slice(&left_sheets[index].columns, &right_sheet.columns);
+        let diff = diff::slice(&left_sheet.columns, &right_sheet.columns);
         for d in diff {
             match d {
                 diff::Result::Left(l) => println!("-{:?}", l),
@@ -35,12 +36,12 @@ fn gen_diff(left_sheets: Vec<Sheet>, right_sheets: Vec<Sheet>) {
 
 /// Iterates over all sheets in the workbook and returns a Vec of sheets with the different
 /// columns
-fn build_sheets<T: Reader>(mut workbook: T) -> Vec<Sheet> {
+fn build_sheets<T: Reader>(mut workbook: T, row_index: usize) -> Vec<Sheet> {
     let mut sheets: Vec<Sheet> = vec![];
 
     for sheet in workbook.sheet_names().to_vec() {
         if let Some(Ok(range)) = workbook.worksheet_range(&sheet) {
-            let columns: Vec<String> = first_row_of_range(range).to_vec();
+            let columns: Vec<String> = nth_row_of_range(row_index, range).to_vec();
             sheets.push(
                 Sheet { name: sheet.to_string(), columns }
             );
@@ -49,8 +50,8 @@ fn build_sheets<T: Reader>(mut workbook: T) -> Vec<Sheet> {
     sheets
 }
 
-fn first_row_of_range(range: Range<DataType>) -> Vec<String> {
-    if let Some(first_row) = range.rows().nth(0) {
+fn nth_row_of_range(n: usize, range: Range<DataType>) -> Vec<String> {
+    if let Some(first_row) = range.rows().nth(n) {
         return first_row.iter().map(|i| i.to_string()).collect();
     } else {
         panic!("sheet is empty");
