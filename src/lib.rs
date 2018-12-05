@@ -15,10 +15,10 @@ pub fn diff_workbooks(path_left: &str, path_right: &str) {
     let left_sheets: Vec<Sheet> = build_sheets(workbook_left, 0);
     let right_sheets: Vec<Sheet> = build_sheets(workbook_right, 2);
 
-    gen_diff(left_sheets, right_sheets);
+    gen_diff(&left_sheets, &right_sheets);
 }
 
-fn gen_diff(left_sheets: Vec<Sheet>, right_sheets: Vec<Sheet>) {
+fn gen_diff(left_sheets: &[Sheet], right_sheets: &[Sheet]) {
     for right_sheet in right_sheets.iter() {
         // FIXME: The following line assumes that both have exactly the same sheets
         let left_sheet = left_sheets.iter().find(|s| s.name == right_sheet.name).expect("Could not find sheet");
@@ -41,7 +41,7 @@ fn build_sheets<T: Reader>(mut workbook: T, row_index: usize) -> Vec<Sheet> {
 
     for sheet in workbook.sheet_names().to_vec() {
         if let Some(Ok(range)) = workbook.worksheet_range(&sheet) {
-            let columns: Vec<String> = nth_row_of_range(row_index, range).to_vec();
+            let columns: Vec<String> = nth_row_of_range(row_index, &range).to_vec();
             sheets.push(
                 Sheet { name: sheet.to_string(), columns }
             );
@@ -50,7 +50,7 @@ fn build_sheets<T: Reader>(mut workbook: T, row_index: usize) -> Vec<Sheet> {
     sheets
 }
 
-fn nth_row_of_range(n: usize, range: Range<DataType>) -> Vec<String> {
+fn nth_row_of_range(n: usize, range: &Range<DataType>) -> Vec<String> {
     if let Some(first_row) = range.rows().nth(n) {
         return first_row.iter().map(|i| i.to_string()).collect();
     } else {
