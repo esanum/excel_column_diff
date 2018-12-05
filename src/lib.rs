@@ -82,7 +82,7 @@ fn test_with_two_existing_workbooks() {
 fn test_build_sheets() {
     let workbook: Xlsx<_> = open_workbook("./tests/auxiliary/test_left.xlsx")
         .expect(&format!("The test workbook could not be loaded"));
-    let result = build_sheets(workbook);
+    let result = build_sheets(workbook, 0);
     let expected = vec![
         Sheet {
             name: "Things".to_string(),
