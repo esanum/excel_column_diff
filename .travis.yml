@@ -7,3 +7,14 @@ os:
   - windows
   - linux
   - osx
+
+branches:
+  only:
+    - master
+
+notifications:
+  email: false
+  hipchat: c882e8d469a1f62d1d528b8cb205ad@3221398
+  on_success: never
+  on_failure: always
+  notify: true
