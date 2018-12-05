@@ -22,13 +22,13 @@ fn gen_diff(left_sheets: &[Sheet], right_sheets: &[Sheet]) {
     for right_sheet in right_sheets.iter() {
         // FIXME: The following line assumes that both have exactly the same sheets
         let left_sheet = left_sheets.iter().find(|s| s.name == right_sheet.name).expect("Could not find sheet");
-        println!("### {} ###", right_sheet.name);
+        println!("\n### {} ###", right_sheet.name);
         let diff = diff::slice(&left_sheet.columns, &right_sheet.columns);
         for d in diff {
             match d {
-                diff::Result::Left(l) => println!("-{:?}", l),
-                diff::Result::Both(l, _) => println!("{:?}", l),
-                diff::Result::Right(r) => println!("+{:?}", r),
+                diff::Result::Left(l) => println!("-{}", l),
+                diff::Result::Both(l, _) => println!("{}", l),
+                diff::Result::Right(r) => println!("+{}", r),
             }
         }
     }
