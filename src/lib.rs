@@ -1,13 +1,5 @@
 use calamine::{Reader, Range, DataType, open_workbook, Xlsx};
 
-/// Holds the column diff of a specific sheet
-struct Diff {
-    /// name of the sheet
-    name: String,
-    added: Vec<String>,
-    removed: Vec<String>
-}
-
 #[derive(Debug, PartialEq)]
 struct Sheet {
     name: String,
@@ -23,8 +15,22 @@ pub fn diff_workbooks(path_left: &str, path_right: &str) {
     let left_sheets: Vec<Sheet> = build_sheets(workbook_left);
     let right_sheets: Vec<Sheet> = build_sheets(workbook_right);
 
-    println!("left_sheets: {:?}", left_sheets);
-    println!("right_sheets: {:?}", right_sheets);
+    gen_diff(left_sheets, right_sheets);
+}
+
+fn gen_diff(left_sheets: Vec<Sheet>, right_sheets: Vec<Sheet>) {
+    // FIXME: The following line assumes that both have the same sheets
+    for (index, right_sheet) in right_sheets.iter().enumerate() {
+        println!("### {} ###", right_sheet.name);
+        let diff = diff::slice(&left_sheets[index].columns, &right_sheet.columns);
+        for d in diff {
+            match d {
+                diff::Result::Left(l) => println!("-{:?}", l),
+                diff::Result::Both(l, _) => println!("{:?}", l),
+                diff::Result::Right(r) => println!("+{:?}", r),
+            }
+        }
+    }
 }
 
 /// Iterates over all sheets in the workbook and returns a Vec of sheets with the different
