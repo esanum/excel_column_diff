@@ -14,7 +14,7 @@ branches:
 
 notifications:
   email: false
-  hipchat: c882e8d469a1f62d1d528b8cb205ad@3221398
+  slack: esanum:XFAkvhriKLtaV89LA5CUnSEN
   on_success: never
   on_failure: always
   notify: true
