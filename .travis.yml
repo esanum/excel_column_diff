@@ -14,7 +14,9 @@ branches:
 
 notifications:
   email: false
-  slack: esanum:XFAkvhriKLtaV89LA5CUnSEN
+  slack:
+    rooms:
+      secure: "RtCMXwdJfE64e6fExM4HOFTu4KeGzn9TX3608q926kNi551Z/b0xFAxUhNNwptTG/xZjPPPRmku7KlVJTGgMfqW6Y3FgIKehYIoJCPFX5M5Gft4bA+D29ug9snCLWX+OBXeFyrdNoGhugwnSYhGvCvvfgsL++ABEoJENwrPL9Eo="
   on_success: change
   on_failure: always
   notify: true
